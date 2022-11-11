@@ -1,0 +1,8 @@
+import { objectType } from 'nexus'
+
+export const Paging = objectType({
+  name: 'Paging',
+  definition: (t) => {
+    t.nonNull.boolean('hasNext')
+  }
+})
