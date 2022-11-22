@@ -1,16 +1,19 @@
-FROM node:18-bullseye AS prebuild
+FROM node:18-bullseye AS base
 ENV TZ='UTC'
-FROM prebuild AS build
+
+FROM base AS install
 WORKDIR /srv
 COPY application/package*.json ./
 RUN yarn
+
+FROM install AS dev
+CMD yarn dev
+
+FROM install AS build
 COPY application/. .
 RUN yarn build
 
-FROM build AS dev
-CMD yarn dev
-
-FROM prebuild AS prod
+FROM base AS prod
 RUN groupadd -g 1001 nodejs
 RUN useradd -m -u 1001 -g 1001 nodejs
 WORKDIR /srv

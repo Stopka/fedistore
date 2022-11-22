@@ -1,7 +1,6 @@
 import { arg, extendType, nonNull } from 'nexus'
 import { StatsList, StatsQueryInput } from '../types/index.js'
 import { Context } from '../../context/index.js'
-import nodeIndex from '../../../elastic/indicies/nodeIndex.js'
 import SortingInputType from '../../types/SortingInput.js'
 import { StatsSortingByValues } from '../../values/StatsSortingByValues.js'
 
@@ -38,11 +37,11 @@ export const listStats = extendType({
           default: { sortBy: 'nodeCount', sortWay: 'desc' }
         })
       },
-      resolve: async (event, { query }: ListStatsArgs, { elasticClient }: Context) => {
+      resolve: async (event, { query }: ListStatsArgs, { elasticClient, indicies }: Context) => {
         console.info('Searching stats', { query })
 
         const results = await elasticClient.search({
-          index: nodeIndex,
+          index: indicies.node,
           query: {
             match_all: {}
           },

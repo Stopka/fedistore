@@ -1,9 +1,8 @@
 import { arg, extendType, nonNull } from 'nexus'
-import { FeedQueryInput, PagingInput } from '../types/index.js'
+import { FeedList, FeedQueryInput, PagingInput } from '../types/index.js'
 import { Context } from '../../context/index.js'
 import Feed from '../../../elastic/types/Feed.js'
 import prepareSimpleQuery from '../../../elastic/prepareSimpleQuery.js'
-import feedIndex from '../../../elastic/indicies/feedIndex.js'
 import { PagingInputType } from '../../types/PagingInputType.js'
 
 interface Args {
@@ -17,7 +16,7 @@ export const listFeeds = extendType({
   type: 'Query',
   definition (t) {
     t.field('listFeeds', {
-      type: 'FeedList',
+      type: FeedList,
       args: {
         paging: arg({
           type: nonNull(PagingInput),
@@ -28,7 +27,7 @@ export const listFeeds = extendType({
           default: { search: '' }
         })
       },
-      resolve: async (event, { paging, query }: Args, { elasticClient, defaultPaging }: Context) => {
+      resolve: async (event, { paging, query }: Args, { elasticClient, defaultPaging, indicies }: Context) => {
         console.info('Searching feeds', { paging, query })
         if (query.search === '') {
           return {
@@ -38,7 +37,7 @@ export const listFeeds = extendType({
         }
         const oneYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1))
         const results = await elasticClient.search<Feed>({
-          index: feedIndex,
+          index: indicies.feed,
           size: defaultPaging.limit + 1,
           from: paging.page * defaultPaging.limit,
           query: {

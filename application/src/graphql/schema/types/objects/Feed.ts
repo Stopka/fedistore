@@ -4,8 +4,6 @@ import { Field } from './Field.js'
 import FeedSource from '../../../../elastic/types/Feed.js'
 import NodeSource from '../../../../elastic/types/Node.js'
 import { DateTime } from '../scalars/index.js'
-import feedIndex from '../../../../elastic/indicies/feedIndex.js'
-import nodeIndex from '../../../../elastic/indicies/nodeIndex.js'
 import { Node } from './Node.js'
 import { FeedTypeEnum } from '../enums/index.js'
 import getFeedId from '../../../../elastic/helpers/getFeedId.js'
@@ -39,14 +37,14 @@ export const Feed = objectType({
     })
     t.nullable.field('parent', {
       type: Feed,
-      resolve: async (source: FeedSource, args, { elasticClient }: Context) => {
+      resolve: async (source: FeedSource, args, { elasticClient, indicies }: Context) => {
         if (source.parentFeedName === undefined || source.parentFeedDomain === undefined) {
           return null
         }
         const parentId = getFeedId(source.parentFeedName, source.parentFeedDomain)
         try {
           const parentFeedResult = await elasticClient.get<FeedSource>({
-            index: feedIndex,
+            index: indicies.feed,
             id: parentId
           })
           return parentFeedResult._source
@@ -65,9 +63,9 @@ export const Feed = objectType({
     })
     t.nonNull.field('node', {
       type: Node,
-      resolve: async (source: FeedSource, args, { elasticClient }: Context) => {
+      resolve: async (source: FeedSource, args, { elasticClient, indicies }: Context) => {
         const nodeResult = await elasticClient.get<NodeSource>({
-          index: nodeIndex,
+          index: indicies.node,
           id: source.domain
         })
         return nodeResult._source

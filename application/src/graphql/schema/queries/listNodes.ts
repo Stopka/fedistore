@@ -1,7 +1,6 @@
 import { arg, extendType, nonNull } from 'nexus'
 import { NodeQueryInput, PagingInput, NodeList } from '../types/index.js'
 import { Context } from '../../context/index.js'
-import nodeIndex from '../../../elastic/indicies/nodeIndex.js'
 import Node from '../../../elastic/types/Node.js'
 import prepareSimpleQuery from '../../../elastic/prepareSimpleQuery.js'
 import { PagingInputType } from '../../types/PagingInputType.js'
@@ -31,11 +30,11 @@ export const listNodes = extendType({
           default: { default: '', sortBy: 'refreshedAt', sortWay: 'desc' }
         })
       },
-      resolve: async (event, { paging, query }: ListNodesArgs, { elasticClient, defaultPaging }: Context) => {
+      resolve: async (event, { paging, query }: ListNodesArgs, { elasticClient, defaultPaging, indicies }: Context) => {
         console.info('Searching nodes', { paging, query })
 
         const results = await elasticClient.search<Node>({
-          index: nodeIndex,
+          index: indicies.node,
           query: {
             bool: {
               must: [
