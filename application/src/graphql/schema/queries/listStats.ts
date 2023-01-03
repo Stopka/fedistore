@@ -11,6 +11,17 @@ interface ListStatsArgs {
   query: SortingInputType<ListStatsSortBy>
 }
 
+export interface StatsType {
+  softwareName: string
+  nodeCount: number
+  accountFeedCount: number
+  channelFeedCount: number
+}
+
+export interface ListStatsType {
+  items: StatsType[]
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getSort = (query: SortingInputType<ListStatsSortBy>) => {
   switch (query.sortBy) {
@@ -37,7 +48,7 @@ export const listStats = extendType({
           default: { sortBy: 'nodeCount', sortWay: 'desc' }
         })
       },
-      resolve: async (event, { query }: ListStatsArgs, { elasticClient, indicies }: Context) => {
+      resolve: async (event, { query }: ListStatsArgs, { elasticClient, indicies }: Context): Promise<ListStatsType> => {
         console.info('Searching stats', { query })
 
         const results = await elasticClient.search({
