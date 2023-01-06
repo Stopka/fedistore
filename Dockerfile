@@ -4,7 +4,7 @@ ENV TZ='UTC'
 FROM base AS install
 WORKDIR /srv
 COPY application/package*.json ./
-RUN yarn
+RUN yarn install
 
 FROM install AS dev
 CMD yarn dev
@@ -20,5 +20,5 @@ WORKDIR /srv
 USER nodejs
 COPY --from=build /srv/node_modules ./node_modules
 COPY --from=build /srv/package*.json ./
-COPY --from=build /srv/dist ./dist
-CMD yarn prod
+COPY --from=build --chown=nextjs:nodejs  /srv/dist ./dist
+CMD yarn start

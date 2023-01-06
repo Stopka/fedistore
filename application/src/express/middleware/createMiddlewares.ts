@@ -1,6 +1,5 @@
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import createApolloMiddleware from './createApolloMiddleware.js'
 import { RequestHandler } from 'express'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import AppConfig from '../../config/AppConfig.js'
