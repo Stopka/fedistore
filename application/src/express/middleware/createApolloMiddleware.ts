@@ -9,7 +9,7 @@ export default async function createApolloMiddleware <
     > (httpServer: Server<Request, Response>, config: AppConfig): Promise<RequestHandler> {
   const graphqlServer = await createGraphqlServer(httpServer, config)
   await graphqlServer.start()
-  console.info('Started graphql server')
+  console.info('Started graphql server, creating graphql middleware')
   return graphqlServer.getMiddleware({
     path: config.get('http.path')
   })

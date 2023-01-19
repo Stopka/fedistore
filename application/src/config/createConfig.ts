@@ -16,9 +16,12 @@ export default function createConfig (): AppConfig {
         convict(schema.children).load(source).validate()
       }
     },
-    coerce (val: any): string[] {
+    coerce (val: unknown): string[] {
+      if (Array.isArray(val)) {
+        return val.map(item => item.toString())
+      }
       if (typeof val !== 'string') {
-        return val
+        return []
       }
       return val.split(/[,;|\s]/)
     }
@@ -38,6 +41,16 @@ export default function createConfig (): AppConfig {
         default: '/api/graphql',
         env: 'HTTP_PATH',
         arg: 'http-path'
+      }
+    },
+    cors: {
+      allowedOrigins: {
+        doc: 'Domains allowed to call api using http cors headers',
+        env: 'CORS_ALLOWED_ORIGINS',
+        arg: 'cors-allowed-origins',
+        format: 'string-array',
+        default: ['*'],
+        children: 'string'
       }
     },
     elastic: {
@@ -64,19 +77,13 @@ export default function createConfig (): AppConfig {
       }
     },
     access: {
-      read: {
-        doc: 'Api keys that have permission to read from database',
-        env: 'ACCESS_READ',
-        arg: 'access-read',
-        format: '*',
-        default: ''
-      },
       write: {
         doc: 'Api keys that have permission to read and write from database',
         env: 'ACCESS_WRITE',
         arg: 'access-write',
-        format: '*',
-        default: ''
+        format: 'string-array',
+        default: [''],
+        children: 'string'
       }
     },
     defaultPaging: {

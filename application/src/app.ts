@@ -1,3 +1,5 @@
-import runApp from './express/runApp.js'
+import createConfig from './config/createConfig.js'
+import runServer from './express/runServer.js'
+const config = createConfig()
 
-await runApp()
+await runServer(config)
