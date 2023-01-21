@@ -4,6 +4,7 @@ ENV TZ='UTC'
 FROM base AS install
 WORKDIR /srv
 COPY application/package*.json ./
+COPY application/yarn.lock ./
 RUN yarn install
 
 FROM install AS dev
