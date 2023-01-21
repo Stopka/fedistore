@@ -1,7 +1,7 @@
 import express from 'express'
 import http from 'http'
 import AppConfig from '../config/AppConfig.js'
-import createMiddlewares from './middleware/createMiddlewares.js'
+import createGraphqlMiddlewares from './middleware/createGraphqlMiddlewares.js'
 import listenHttp from './listenHttp.js'
 
 export default async function runServer (config: AppConfig): Promise<void> {
@@ -11,7 +11,8 @@ export default async function runServer (config: AppConfig): Promise<void> {
 
   const { path, port } = config.get('http')
   app.use(
-    ...await createMiddlewares(httpServer, config)
+    path,
+    ...await createGraphqlMiddlewares(httpServer, config)
   )
   await listenHttp(httpServer, port)
 

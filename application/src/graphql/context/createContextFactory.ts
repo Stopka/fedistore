@@ -1,5 +1,5 @@
-import { ContextFunction } from 'apollo-server-core/src/types.js'
-import { Request } from 'express'
+import { ContextFunction } from '@apollo/server'
+import { ExpressContextFunctionArgument } from '@apollo/server/express4'
 import createAuthorization from '../../authorization/createAuthorization.js'
 import createElasticClient from '../../elastic/createElasticClient.js'
 import AppConfig from '../../config/AppConfig.js'
@@ -7,7 +7,7 @@ import assertFeedIndex from '../../elastic/index/assertFeedIndex.js'
 import assertNodeIndex from '../../elastic/index/assertNodeIndex.js'
 import Context from './Context.js'
 
-export default async function createContextFactory (config: AppConfig): Promise<ContextFunction<{ req: Request }, Context>> {
+export default async function createContextFactory (config: AppConfig): Promise<ContextFunction<[ExpressContextFunctionArgument], Context>> {
   console.info('Creating graphql context factory')
   const contextTemplate: Omit<Context, 'authorization'> = {
     elasticClient: await createElasticClient(config.get('elastic')),
