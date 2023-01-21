@@ -94,6 +94,15 @@ export default function createConfig (): AppConfig {
         format: 'int',
         default: 20
       }
+    },
+    crawling: {
+      version: {
+        doc: 'Index schema version. Increasing the number makes all nodes reindexed',
+        env: 'CRAWLING_VERSION',
+        arg: 'crawling-version',
+        format: 'int',
+        default: 0
+      }
     }
   })
 }

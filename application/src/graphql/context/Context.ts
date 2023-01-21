@@ -7,8 +7,9 @@ export interface Context {
   elasticClient: Client
   defaultPaging: DefaultPagingConfig
   indicies: Indicies
-
   authorization: Authorization
+
+  crawlingVersion: number
 }
 
 export default Context

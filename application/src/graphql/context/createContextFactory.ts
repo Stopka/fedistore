@@ -15,7 +15,8 @@ export default async function createContextFactory (config: AppConfig): Promise<
     indicies: {
       node: 'node',
       feed: 'feed'
-    }
+    },
+    crawlingVersion: config.get('crawling.version')
   }
 
   await assertNodeIndex(contextTemplate.elasticClient, contextTemplate.indicies.node)
